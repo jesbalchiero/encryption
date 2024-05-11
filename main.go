@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 const originalLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -15,7 +16,6 @@ func main() {
 
 	decrypted := decrypt(5, encrypted)
 	fmt.Println("Decrypted text", decrypted)
-
 }
 
 // hashLetterFn rearranges letters based on the provided key
@@ -31,40 +31,30 @@ func hashLetterFn(key int, letter string) (result string) {
 
 // encrypt applies the Caesar cipher encryption to the plaintext
 func encrypt(key int, plainText string) (result string) {
-	var encrypted string
+	var encrypted strings.Builder
 	for _, char := range plainText {
 		if char >= 'A' && char <= 'Z' {
-			// Encrypt uppercase letter
-			shifted := ((int(char) - 'A' + key) % 26) + 'A'
-			encrypted += string(shifted)
+			encrypted.WriteByte(byte((int(char)-'A'+key)%26 + 'A'))
 		} else if char >= 'a' && char <= 'z' {
-			// Encrypt lowercase letter
-			shifted := ((int(char) - 'a' + key) % 26) + 'a'
-			encrypted += string(shifted)
+			encrypted.WriteByte(byte((int(char)-'a'+key)%26 + 'a'))
 		} else {
-			// Leave non-alphabetic characters unchanged
-			encrypted += string(char)
+			encrypted.WriteRune(char)
 		}
 	}
-	return encrypted
+	return encrypted.String()
 }
 
 // decrypt applies the Caesar cipher decryption to the encrypted text
 func decrypt(key int, encryptedText string) (result string) {
-	var decrypted string
+	var decrypted strings.Builder
 	for _, char := range encryptedText {
 		if char >= 'A' && char <= 'Z' {
-			// Decrypt uppercase letter
-			shifted := ((int(char) - 'A' - key + 26) % 26) + 'A'
-			decrypted += string(shifted)
+			decrypted.WriteByte(byte((int(char)-'A'-key+26)%26 + 'A'))
 		} else if char >= 'a' && char <= 'z' {
-			// Decrypt lowercase letter
-			shifted := ((int(char) - 'a' - key + 26) % 26) + 'a'
-			decrypted += string(shifted)
+			decrypted.WriteByte(byte((int(char)-'a'-key+26)%26 + 'a'))
 		} else {
-			// Leave non-alphabetic characters unchanged
-			decrypted += string(char)
+			decrypted.WriteRune(char)
 		}
 	}
-	return decrypted
+	return decrypted.String()
 }
